@@ -3,14 +3,19 @@
 // phpQuery公式：https://code.google.com/archive/p/phpquery/
 require_once("./phpQuery-onefile.php");
 
+
 // B番号取得
 if(isset($_POST['getBnumber']) && $_POST['getBnumber'] === "取得"){
-
+    
     $url = htmlspecialchars($_POST['url'], ENT_QUOTES);
 
     $path = explode("/", $url);
     $dp = array_search("dp", $path);
     $bNum = $path[$dp+1];
+
+    // 中古価格もとる ↓の中古価格取得も実行するためPOSTに追加
+    $_POST['bNumber'] = $bNum;
+    $_POST['getPrices'] = "取得";
 }
 
 
@@ -23,6 +28,9 @@ if(isset($_POST['getPrices']) && $_POST['getPrices'] === "取得"){
     $target = file_get_contents("https://www.amazon.co.jp/gp/offer-listing/$bNumber/ref=dp_olp_used?ie=UTF8&condition=used");
     $doc = phpQuery::newDocument($target);
 
+    $title = $doc['h1']->text();
+    
+
     // 価格の取得
     $count = count($doc[".olpOfferPrice"]);
     for($i = 0; $i < $count; $i++){
@@ -34,7 +42,8 @@ if(isset($_POST['getPrices']) && $_POST['getPrices'] === "取得"){
 
 
     // 結果の組み立て　最安値、３件平均、５件平均、全件平均
-    $html = "<table border='1' width='200'><tr><td>中古件数</td><td>$count 件</td></tr>";
+    $html = "<h2>$title</h2>";
+    $html .= "<table border='1' width='200'><tr><td>中古件数</td><td>$count 件</td></tr>";
 
     if($count == 0){
         $html .= "<tr><td>中古商品はありません。</td></tr>";
@@ -61,13 +70,12 @@ if(isset($_POST['getPrices']) && $_POST['getPrices'] === "取得"){
 }
 
 
-
 ?>
 
 
 <h2>B番号取得</h2>
 <form method="post" action="./index.php">
-商品URL : <input required type="text" name="url" value="<?= $url; ?>">
+商品URL : <input required type="text" name="url" value="<?= $url; ?>" onfocus="this.select();">
 <input type="submit" name="getBnumber" value="取得">
 </form>
 
