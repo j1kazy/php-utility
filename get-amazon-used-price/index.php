@@ -3,8 +3,6 @@
 // phpQuery公式：https://code.google.com/archive/p/phpquery/
 require_once("./phpQuery-onefile.php");
 
-// B00008IDLM
-
 // B番号取得
 if(isset($_POST['getBnumber']) && $_POST['getBnumber'] === "取得"){
 
@@ -13,9 +11,6 @@ if(isset($_POST['getBnumber']) && $_POST['getBnumber'] === "取得"){
     $path = explode("/", $url);
     $dp = array_search("dp", $path);
     $bNum = $path[$dp+1];
-    var_dump($bNum);
-    // dp
-    //dp/B00008IDLM
 }
 
 
